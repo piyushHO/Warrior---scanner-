@@ -4,15 +4,11 @@ from fpdf import FPDF
 from email.message import EmailMessage
 
 app = Flask(__name__)
-# Professional clients ki sites scan karne ke liye SSL warnings off
 requests.packages.urllib3.disable_warnings()
 
 def clean_text(text): return re.sub(r'[^\x00-\x7f]', r'', text)
-
-# --- PROFESSIONAL BUSINESS ENGINE ---
 def run_extreme_audit(target_url):
     report = []
-    # Auto-formatting for business inputs
     if not target_url.startswith('http'):
         target_url = 'https://' + target_url
     
@@ -23,17 +19,17 @@ def run_extreme_audit(target_url):
         report.append("="*50)
         report.append(f"Audit Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}")
 
-        # Business Stealth Headers (Firewall Bypass)
+        
         h = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0'}
         
-        # 1. Server Fingerprinting
+        
         res = requests.get(target_url, timeout=12, headers=h, verify=False)
         report.append(f"\n[+] SERVER INTEL")
         report.append(f"Status: ONLINE")
         report.append(f"Server Technology: {res.headers.get('Server', 'Protected')}")
         report.append(f"Security Headers: {'Found' if 'Content-Security-Policy' in res.headers else 'MISSING'}")
 
-        # 2. Network Port Intelligence (Business Range)
+        
         report.append("\n[+] NETWORK INFRASTRUCTURE")
         for p in [21, 22, 25, 53, 80, 110, 443, 3306, 8080]:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -42,7 +38,7 @@ def run_extreme_audit(target_url):
                 report.append(f"OPEN PORT: {p} (Action Required)")
             sock.close()
 
-        # 3. Deep Vulnerability Check (SQLi & XSS)
+        
         report.append("\n[+] VULNERABILITY ASSESSMENT")
         sqli_url = f"{target_url}/?id=1' OR 1=1--"
         try:
@@ -51,7 +47,7 @@ def run_extreme_audit(target_url):
                 report.append("!! CRITICAL: SQL Injection Potential Found")
         except: pass
 
-        # 4. Sensitive File Exposure
+        
         report.append("\n[+] DATA EXPOSURE SCAN")
         for path in ['/.env', '/robots.txt', '/.git/config', '/backup.sql']:
             if requests.get(target_url + path, timeout=4, headers=h, verify=False).status_code == 200:
@@ -77,9 +73,11 @@ def send_email(user_email, file_name):
         return True
     except: return False
 
-# --- ORIGINAL SHINY INTERFACE (AS REQUESTED) ---
+
 WARRIOR_INTERFACE = """
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Warrior Scan</title><style>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Warrior Scan</title>
+<style>
 :root { --p: #00ccff; --s: #d400d4; --b: #000; }
 body, html { margin:0; padding:0; width:100%; height:100%; background:var(--b); font-family:sans-serif; overflow:hidden; }
 #intro { position:fixed; inset:0; z-index:999; display:flex; align-items:center; justify-content:center; background:#000; }
@@ -103,7 +101,9 @@ input { width:100%; padding:15px; margin:10px 0; border-radius:10px; border:1px 
 <script>
 function st(){ setTimeout(()=>{ document.getElementById('sl').style.transform='translateX(-100%)'; document.getElementById('sr').style.transform='translateX(100%)'; document.getElementById('wb').style.opacity='1'; }, 700); }
 function en(){ document.getElementById('intro').style.display='none'; document.getElementById('mu').style.display='flex'; }
-</script></body></html>
+</script>
+</body>
+</html>
 """
 
 @app.route('/')
